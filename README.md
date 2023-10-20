@@ -1,17 +1,21 @@
-# Desafio tecnico leitor de arquivos CNAB
+# Leitura de arquivos CNAB
 
-Este desafio tem a proposta de melhorar uma CI que le arquivos cnab.
-Um CNAB é um arquivo posicional, sendo que cabeçalho é as duas primeiras linhas do arquivo e seu rodapé as duas ultimas.
+Projeto consiste na leitura de um arquivo posicional e melhoramento de CLI.
 
-Ele é dividido por segmentos *P*, *Q* e *R*, cada linha começa com um codigo que tem no final o tipo de segmento:
+- Para o primeiro item - busca de arquivo passando o diretório - o mesmo é agora possível passando o parametro `-d` e `-n`. Caso não se passe o parametro `-d` o mesmo buscará no root do projeto. Além disso, é criado uma indexação para que casos onde há grandes arquivos de leitura, seja mais fácil realizar a busca; Para essa busca é possivel selecionar a linha `-i` ou buscar por todas as linhas onde se tem o segmento `-s` passado como parametro
 
-```
-0010001300002Q 012005437734000407NTT BRASIL COMERCIO E SERVICOS DE TECNOLAVENIDA DOUTOR CHUCRI ZAIDAN, 1240 ANDARVILA SAO FRANCI04711130SAO PAULO      SP0000000000000000                                        000
-```
-Neste exemplo o **Q** aparece na posição/coluna 14, cada posição representa algo dentro do arquivo cnab.
+- Para o segundo ponto, tem-se uma busca de nome da empresa de forma agnóstica, ou seja, o nome é passado como parametro `-c` e será buscado em todos os tipos de segmento, independente de visualmente só se ter o segmento Q com nomes de empresa. Dessa forma, evita-se qualquer tipo de falha caso alguma outra linha apresente nome de empresa.
 
+- Para o terceiro item, fez-se uma escrita em um arquivo json com o nome e endereço da empresa, independente do comando passado no terminal, esse arquivo é registrado.
 
-hoje ao rodar:
+## Diretórios
+
+- `files` - contem os arquivos cnab
+- `methods` - contém as funçoes chamadas para cada item anterior
+- `storage` - contem todo arquivo gerado no processo
+- `utils` - funções auxiliares para o projeto
+
+## Execução
 
 ```bash
 node cnabRows.js
@@ -30,19 +34,13 @@ Opções:
                                                           [número] [obrigatório]
   -t, --to        posição final de pesquisa da linha do Cnab
                                                           [número] [obrigatório]
-  -s, --segmento  tipo de segmento                        [string] [obrigatório]
+  -s, --segment   tipo de segmento                        [string] [obrigatório]
+  -d, --dir       Nome do diretório onde se encontra o arquivo          [string]
+  -n, --fileName  Nome do arquivo especificado            [string] [obrigatório]
+  -i, --line      Linha do arquivo para buscar o segmento (opcional)    [número]
+  -c, --company   Busca pelo nome da empresa                            [string]
 
 Exemplos:
-  cnabRows.js -f 21 -t 34 -s p  lista a linha e campo que from e to do cnab
+  node cnabRows.js -d /path/to/directory -  lista a linha e campo que from e to
+  n cnabFile.rem -f 21 -t 34 -s p           do cnab
 ```
-
-hoje a ferramenta busca uma posição e loga isso no terminal.
-
-desafio consiste:
-
-* poder passar na CLI o local do arquivo.
-* pesquisar por nome da empresa, e mostrar em que posição que ela foi achada e qual o tipo de segmento ela pertence.
-
-* **Bonus**, ler o cnab e escrever um novo arquivo em formato JSON, contendo nome e endereço da empresa.
-
-O candidato tem total liberdade de mudar a estrutura atual desse projeto, a ideía é ver a criatividade de resolver esse problema.
